@@ -1,0 +1,19 @@
+{
+  "name": "nitc_notes_backend",
+  "version": "1.0.0",
+  "description": "Notes-Document sharing WebApp",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kushwah-lalit/NITCNotes.git"
+  },
+  "author": "Lalit Kushwah | Kartik Shukla",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kushwah-lalit/NITCNotes/issues"
+  },
+  "homepage": "https://github.com/kushwah-lalit/NITCNotes#readme"
+}
