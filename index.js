@@ -15,20 +15,11 @@ const db = require('./config/mongoose');
 const sgMail = require('@sendgrid/mail');
 // sendgrid api key for the connection validation
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
 const expressLayouts = require('express-ejs-layouts');
-const sassMiddleware = require('node-sass-middleware');
-app.use(sassMiddleware({
-    src: './assets/scss',
-    dest: './assets/css',
-    debug: true,
-    outputStyle: 'extended',
-    prefix: '/css'
-}));
 app.use(expressLayouts);
 app.set('layout extractStyles', true);
 app.set('layout extractScripts', true);
-app.use(express.static('./public/assets'));
+app.use(express.static('./assets'));
 app.use('/uploads',express.static(__dirname + '/uploads'));
 app.set('view engine', 'ejs');
 app.set('views', './views');

@@ -1,0 +1,95 @@
+<link rel="stylesheet" type="text/css" href="/css/documents.css">
+<div id="main-body">
+    <div id="menu">
+        <div id="list-menu">
+            <ul class="vertical-list">
+                <li style="margin-top:0rem !important;color: white !important;"><a href="/"><i class="fa-solid fa-chart-line"></i> DashBoard</a></li>
+                <li><a href="/favourites"><i class="fa-solid fa-bookmark"></i> Favourites</a>
+                </li>
+                <li><a href="/documents"  style="color: white;"><i class="fa-solid fa-file"></i>My Documents</a></li>
+                <li><a href="/users/profile/<%=locals.user._id %>"><i class="fa-solid fa-address-card"></i> Profile Settings</a></li>
+            </ul>
+        </div>
+        <div id="btn-out">
+            <a href="/users/sign-out"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</a>
+        </div>
+        <div id="rights">
+            @NITC Notes, All Rights Reserved
+        </div>
+
+    </div>
+    
+    <div id="data">
+        <form class="animate__animated animate__slideInDown" id="shortdata" action="/documents/upload" method="POST" enctype="multipart/form-data">
+        <input type="text"  name="name" placeholder="Enter File Name" class="form-container" required>
+        <div id="lastrow">
+        <select type="text"  id="select-upload" name="uploadmethod" class="form-container" style="width:18%" required>
+            <option disabled>Select File Upload Method</option>
+            <option value="Google Drive Link"  selected>Google Drive Link</option>
+            <option value="Local Storage">Browse and Upload</option>
+        </select>
+        <input type="url" id="file-input" name="doc" placeholder="Enter Publicly shareable Google Drive Link of file" style="width:55%;"  class="form-container" required>
+        <button type="submit" class="submit" style="width:15%;margin-left:10%;">Upload File</button>
+    </div>
+    </form>
+        <div id="recents">
+            <div class="header">
+                <div style="width:5%"></div>
+                <div style="width:38%;text-align:left;">Files Uploaded</div>
+                <div style="width:23%" onclick="sortByDate()" data-toggle="tooltip" data-placement="top" title="Sort By Date">Uploaded On <i class="fa-solid fa-sort"></i></div>
+                <div style="width:15%">Uploaded From</div>
+                <div style="width:19%"></div>
+            </div>
+            <div id="fetchedList">
+                <% if(!docs.length){%>
+                    <div class="empty-state">
+                        <div class="empty-state__content animate__animated animate__pulse">
+                          <div class="empty-state__icon">
+                            <img src="/images/search-result-not-found-2130361-1800925.png" alt="no-result-found">
+                          </div>
+                          <div class="empty-state__message">No Documents (Notes) uploaded yet.</div>
+                          <div class="empty-state__help">
+                            Start maintaining your documents or Study material files by the above upload option.
+                          </div>
+                        </div>
+                    </div>
+                <%}%>
+                <% for(let doc of docs){%>
+                    <div class="item animate__animated animate__fadeInUp">
+                        <div style="width:5%"><i class="fa-solid fa-file"></i></div>
+                        <div style="width:38%;text-align:left;"><%= doc.name%></div>
+                        <div style="width:23%"><%= new Date(doc.createdAt).toDateString()%></div>
+                        <%if(doc.uploadWay === "Google Drive Link"){%>
+                            <div style="width:15%;background-color:#1570FF;padding:0.4rem 0rem;border-radius:10px;">Google Drive Link</div>
+                        <%}else{%>
+                            <div style="width:15%;background-color:#F97600;padding:0.4rem 0rem;border-radius:10px;">Local Storage</div>
+                        <%}%>
+                        <div style="width:19%; display: flex;justify-content: space-around;">
+                            <a id="tool" style="color: rgba(214, 214, 214, 1);" data-toggle="tooltip" data-placement="top" title="Share File"><i class="fa-solid fa-share-nodes" onclick="showAndFill('<%= doc.name%>','<%= doc._id%>','<%= locals.user.id%>')"></i></a>
+                            <%if(doc.uploadWay === "Google Drive Link"){%>
+                                <a id="tool" style="color: rgba(214, 214, 214, 1);" href="<%= doc.downloadLink%>" target="_blank" data-toggle="tooltip" data-placement="top" title="Download File"><i class="fa-solid fa-file-arrow-down"></i></a>
+                            <%}else{%>
+                                <a id="tool" style="color: rgba(214, 214, 214, 1);" href="/documents/download/<%= doc._id%>" data-toggle="tooltip" data-placement="top" title="Download File"><i class="fa-solid fa-file-arrow-down"></i></a>
+                            <%}%>
+                            <% if(doc.isPublic){%>
+                                <a id="<%=doc._id%>" onclick="togglePublic('/documents/togglePublic/<%= doc._id%>')" style="color: rgba(214, 214, 214, 1);" data-toggle="tooltip" data-placement="top" title="Make Private">
+                                    <i class="fa-solid fa-lock-open"></i>  
+                                </a>
+                            <%}else{%>
+                                <a id="<%=doc._id%>" onclick="togglePublic('/documents/togglePublic/<%= doc._id%>')" style="color: rgba(214, 214, 214, 1);" data-toggle="tooltip" data-placement="top" title="Make Public">
+                                    <i class="fa-solid fa-lock"></i>
+                                </a>
+                            <%}%>
+                            <a id="del" style="color: rgba(214, 214, 214, 1);" href="/documents/delete/<%= doc._id%>" data-toggle="tooltip" data-placement="top" title="Delete File"><i class="fa-regular fa-trash-can"></i></a>
+                        </div>
+                    </div>
+                <%}%>
+        </div>
+               
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="/js/navbar.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/dateFormat-3.0.3.min.js"></script>
+<script src="/js/documents.js"></script>

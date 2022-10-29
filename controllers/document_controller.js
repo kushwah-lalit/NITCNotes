@@ -7,15 +7,15 @@ const sgMail = require('@sendgrid/mail');
 // sendgrid api key for the connection validation
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-const bellData = require('./bell_controller');
+// const bellData = require('./bell_controller');
 module.exports.documentPage = async function(req,res){
     try{
         let documents = await Document.find({author:req.user.id}).sort('-createdAt');
-        let noty = await bellData.taskData(req.user.id);
+        // let noty = await bellData.taskData(req.user.id);
         return res.render('documents',{
             title:'Documents',
             docs:documents,
-            noty:noty
+            // noty:noty
         });
     }catch(err){
         req.flash('error', err);
@@ -73,11 +73,11 @@ module.exports.uploadDoc = async function(req,res){
 };
 module.exports.downloadDoc = function(req,res){
     Document.findById(req.params.id, async function(err,file){
-        let noty = await bellData.taskData(req.user.id);
+        //let noty = await bellData.taskData(req.user.id);
         if(err || !file){
             return res.render('404', {
                 title: '404 Page not found',
-                noty:noty
+                //noty:noty
             });
         }
         console.log(path.join(__dirname, '..' , file.downloadLink.substr(1)));
@@ -100,13 +100,13 @@ module.exports.downloadDoc = function(req,res){
 module.exports.deleteDoc = function(req,res){
   
     Document.findById(req.params.id).populate('author').exec(async function(err,file){
-        let noty = await bellData.taskData(req.user.id);
+        //let noty = await bellData.taskData(req.user.id);
         if(err || !file){
             req.flash('error', err);
             console.log('No Such Doc found :: Error :',err);
             return res.render('404', {
                 title: '404 Page not found',
-                noty:noty
+                //noty:noty
             });
         }
         if(file.author.id == req.user.id){
@@ -184,4 +184,38 @@ module.exports.shareDoc = function(req,res){
                 return res.redirect('back');            
             }
     });
+};
+
+module.exports.togglePublic = async function(req,res){
+    try{
+        let document = await Document.findById(req.params.id).populate('author');
+        if(document){
+            if(document.author.id == req.user.id){
+                document.isPublic = !document.isPublic;
+                await document.save();
+                if (req.xhr){
+                    return res.status(200).json({
+                        data: {
+                            document_id: req.params.id,
+                            isPublicStatus:document.isPublic
+                        },
+                        message: "Post deleted"
+                    });
+                }
+                return res.redirect('back');
+            }else{
+                req.flash('error', err);
+                console.log('Document Public denied :: Error :',err);
+                return res.redirect('back');
+            }
+        }else{
+            req.flash('error', err);
+            console.log('Document does not exists :: Error :',err);
+            return res.redirect('back');
+        }
+    }catch(err){
+        req.flash('error', err);
+        console.log('Document Public not toggled :: Error :',err);
+        return res.redirect('back');
+    }
 };

@@ -8,75 +8,23 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 
 const crypto = require('crypto');
-const bellData = require('./bell_controller');
+// const bellData = require('./bell_controller');
 module.exports.login = function(req,res){
     if (req.isAuthenticated()){
         return res.redirect('/');
     }
     return res.render('login',{
-        title:'Everlast Notes'
+        title:'NITC Notes'
     });
 };
-module.exports.signup = function(req,res){
+module.exports.contact = function(req,res){
     if (req.isAuthenticated()){
         return res.redirect('/');
     }
-    return res.render('signup',{
-        title:'Create Account'
+    return res.render('contact',{
+        title:'Contact'
     });
 };
-module.exports.forgotpassword = function(req,res){
-    if (req.isAuthenticated()){
-        return res.redirect('/');
-    }
-    return res.render('reset_password',{
-        title:'Forgot Password'
-    });
-};
-module.exports.resetpassword = function(req, res){
-    
-    User.findOne({email: req.body.email},async function(err,user){
-        if(err){
-            // console.log('Error while finding the user');
-            req.flash('error', err); 
-            console.log(`Error on searching user: forgot password stage::${err}`);
-            return;
-        }
-        if(user){
-            user.password = crypto.randomBytes(8).toString('hex');
-            user.save();
-            const msg = {
-                to: user.email,
-                from: {
-                    email:process.env.SENDGRID_EMAIL,
-                    name:'Everlast Notes'
-                },
-                templateId: process.env.RESET_PASSWORD_TEMPLATE,
-                dynamic_template_data: {
-                subject:'Account Password Changed',
-                name:user.name,
-                password:user.password
-                },
-            }
-              try{
-                await sgMail.send(msg);
-                req.flash('success','Password Changed Successfully');
-                // mail send then bring back user to signin page
-                return res.redirect('/users/signup');
-              }catch(err){
-                  console.log(`Error on mail sendig : ${err}`);
-                  req.flash('error','Password Reset mail cannot be sent contact Admin');
-                //   else error in sending the mail then back to signup page
-                  return res.redirect('users/signup');
-
-              }            
-        }else{
-            console.log(`Email not sent as user does not exists`);
-            req.flash('error','Email not sent as user does not exists');
-            return res.redirect('/users/login');
-        }
-    });
-}
 // // sign in and create a session for the user
 module.exports.createSession = function(req, res){
     req.flash('success', 'Logged in Successfully');
@@ -88,90 +36,7 @@ module.exports.destroySession = function(req, res){
     req.flash('success', 'You have logged out!');
     return res.redirect('/users/login');
 }
-module.exports.create = function(req, res){
-    if(req.body.password!=req.body.confirmpassword){
-        req.flash('error', 'Passwords do not match');
-        return res.redirect('back');
-    }
-    User.findOne({email: req.body.email},function(err,user){
-        if(err){
-            // console.log('Error while finding the user');
-            req.flash('error', err); 
-            return;
-        }
-        if(!user){
-            User.create({
-                name:req.body.name,
-                email:req.body.email,
-                password:req.body.password,
-                emailToken:crypto.randomBytes(64).toString('hex'),
-                avatar:"/images/hacker.png"
-            },async function(err,user){
-                if(err){
-                    // console.log('Error while creating the user');
-                    req.flash('error', err);
-                    console.log('User not created :: Error :',err);
-                    return;
-                }else{
-                    // once inserted then trigger the sendgrid to send the mail
-                    const msg = {
-                        to: user.email,
-                        from: {
-                            email: process.env.SENDGRID_EMAIL,
-                            name:'Everlast Notes'},
-                        templateId:process.env.SIGNUP_TEMPLATE,
-                        dynamic_template_data: {
-                        name:user.name,
-                        host:req.headers.host,
-                        emailToken:user.emailToken
-                        },
-                      }
-                      try{
-                        await sgMail.send(msg);
-                        req.flash('success','Signed Up Successfully : Verify Email ID on registered email to Sign In');
-                        // mail send then bring back user to signin page
-                        return res.redirect('/users/signup');
-                      }catch(err){
-                          console.log(`Error on mail sendig : ${err}`);
-                          req.flash('error','Verification mail cannot be sent contact Admin');
-                        //   else error in sending the mail then back to signup page
-                          return res.redirect('users/signup');
 
-                      }
-                }
-            });
-
-        }else{
-            req.flash('error','User already exists');
-            // user exists then back to signup page
-            return res.redirect('back');
-        }
-    });
-}
-// action to verify user from the mail
-module.exports.verifyEmail = function(req,res){
-    // sql query to search for the user with the email token got from the query
-    User.findOne({emailToken:req.query.token},function(err,user){
-        if(err){
-            // console.log('Error while finding the user');
-            req.flash('error', err); 
-            console.log(`Error on searching user: verfiy email stage::${err}`);
-            return;
-        }
-        if(user){
-            user.emailToken = null;
-            user.isVerified = true;
-            user.save();
-            req.flash('success','Successfully Verified');
-            // back to signin page
-            return res.redirect('/users/signup');
-        }else{
-            console.log(`Cant verify as token is invalid`);
-            req.flash('error','Verified Failed');
-            return res.redirect('/users/signup');
-        }
-    });
-};
 module.exports.profile = async function(req,res){
     User.findById(req.params.id,async function(err, user){
         let noty = await bellData.taskData(req.user.id);

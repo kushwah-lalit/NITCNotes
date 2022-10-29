@@ -18,7 +18,11 @@ const documentSchema = new mongoose.Schema({
     downloadLink:{
         type:String,
         required:true
-    } 
+    },
+    isPublic:{
+        type:Boolean,
+        default:false
+    }
 },
 {
     timestamps:true

@@ -1,0 +1,25 @@
+<nav style="z-index:1030;">
+    <div id="left">
+        <div id="img">
+            <a href="/"><img src="/images/logo.png"></img></a>
+        </div>
+    </div>
+    <div id="right">
+        <div id="search">
+            <button id="search-btn" style="margin-left:5px;"><i class="fa fa-search" aria-hidden="true"></i></button>
+            <% if(title.startsWith("Fav")){%>
+                <input type="text" id="search-box" onkeyup="searchFavs(this)" placeholder="Search for favourite documents...">
+            <%}else if(title.startsWith("Documents")){%>
+                <input type="text" id="search-box" onkeyup="searchFiles(this)" placeholder="Search for your uploaded Files...">
+            <%}else{%>
+                <input type="text" id="search-box" onkeyup="searchDocs(this)" placeholder="Search for notes...">
+            <%}%>
+            <div id="searchResults" class="dropdown-content" style="display:block;top:5.8vh;left:17%;font-family: 'Gilroy-Medium', sans-serif;opacity:0.95;width:500px;max-height:400px;overflow-y:auto;">
+                <!-- search results -->
+            </div>
+        </div>
+        <div id="profile">
+           <a href="/users/profile/<%=locals.user._id %>" data-toggle="tooltip" data-placement="top" title="View Profile"><img src="<%=locals.user.avatar%>" onerror="this.onerror=null; this.src='images/hacker.png'"></img></a>
+        </div>
+    </div>
+    </nav>

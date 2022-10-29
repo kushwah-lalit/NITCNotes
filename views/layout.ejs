@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title><%= title%></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- icon -->
+	<link rel ="icon" href="/images/4536196.png" type = "image/x-icon" >
+	<!-- animate.css -->
+	<link
+	rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+	<!-- fontawesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<!-- home style css -->
+    <% if(!title.startsWith('NITC')&&!title.startsWith('Contact')){%>
+	    <link rel="stylesheet" type="text/css" href="/css/layout.css">
+    <%}%>
+	<style>
+    @import url('https://fonts.googleapis.com/css?family=Poppins:400,700,900');
+    @import url('https://fonts.cdnfonts.com/css/gilroy-bold');
+    </style>
+    <%- style%>
+</head>
+<body class=" animate__animated animate__fadeIn">
+    <% if(locals.user){%>
+        <%- include('_header');%>
+    <%}%>
+    <%- body%>
+    <%- script%>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="/js/navbar.js"></script>
+</body>
+</html>
