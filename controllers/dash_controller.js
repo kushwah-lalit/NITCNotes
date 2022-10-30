@@ -1,32 +1,35 @@
 const User =require('../models/user');
-// const Problem =require('../models/problem');
-// const bellData = require('./bell_controller');
+const Document = require('../models/document');
+
 module.exports.home = function(req,res){
     User.findById(req.user.id,async function(err, user){
         if(err){
             console.log('Error finding user with requested',err);
             return;
         }
-        // let rank = (((await User.find({},'email-_id').sort('-problemCount')).map(({_id}) => _id.toString()))).indexOf(user.id);
-        // let toppers = await User.find().sort('-problemCount').limit(10);
-        // let recents = await Problem.find({author:req.user}).sort('-createdAt').limit(10);
-        // const chartData= new Array();
-        // for (let val of user.problems) {
-        //     chartData.push({category:val[0],progress:{solved:val[1],link:`/category/${val[0].replace(' ','+')}`}});
-        // }
-        // console.log(chartData);
-        // let noty = await bellData.taskData(req.user.id);
-        let problems = [];
-        return res.render('dashboard', {
-            title: `Dashboard | ${user.name}`,
-            problems
-            
-            // user,
-            // rank:rank+1,
-            // toppers,
-            // recents,
-            // chartData,
-            // noty:noty
-        });
+        
+        try{
+            let documents = await Document.find({isPublic:true}).sort('-createdAt').populate("author");
+            let user = await User.findById(req.user.id);
+            //console.log(user);
+            documents.forEach(function (doc) {
+                if(user.favorites.indexOf(doc.id) !== -1){
+                    doc.isFavStatus = true;
+                }else{
+                    doc.isFavStatus = false;
+                }
+                // element.Active = "false";
+            });
+            //console.log(documents);
+            return res.render('dashboard',{
+                title:'Dashboard | ${user.name}',
+                dashDocs:documents,
+            });
+        }catch(err){
+            req.flash('error', err);
+            console.log('Documents Page Render :: Error :',err);
+            return res.redirect('back');
+        }
     });
 };
+

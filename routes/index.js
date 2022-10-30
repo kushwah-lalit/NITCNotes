@@ -15,6 +15,6 @@ router.use('/search',require('./search'));
 router.use('/documents',require('./documents'));
 // router.use('/code',require('./code'));
 // router.use('/tasklist',require('./tasklist'));
-// router.use('/favourite',require('./favourite'));
+router.use('/favourite',require('./favourite'));
 // router.get('*',notFoundController.notFound);
 module.exports = router;

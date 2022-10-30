@@ -28,77 +28,60 @@
                 <option value="asc" ><a href="#" >Latest Last</a></option>
             </select>
         </div>
-        <!-- idhr empty page ka check -->
+        <% if(!dashDocs.length){%>
+            <div class="empty-state">
+                <div class="empty-state__content animate__animated animate__pulse">
+                  <div class="empty-state__icon">
+                    <img src="/images/search-result-not-found-2130361-1800925.png" alt="no-result-found">
+                  </div>
+                  <div class="empty-state__message">No Public Documents to show.</div>
+                  <div class="empty-state__help">
+                    Be the first to make a document public.
+                  </div>
+                </div>
+            </div>
+        <%}%>
        <div id="listitems" class="top-to-bottom">
             <!-- idhr loop -->
+            <% for( let doc of dashDocs){%>
                 <div class="brick animate__animated animate__fadeInUp">
                     <div id="tags">
                         <div id="profile" style="width: 15%;">
-                           <a href="/users/profile/<%=locals.user._id %>" data-toggle="tooltip" data-placement="top" title="View Profile"><img src="<%=locals.user.avatar%>" onerror="this.onerror=null; this.src='images/hacker.png'" style="width: 100%;"></img></a>
+                           <a href="/users/profile/<%=doc.author._id %>" data-toggle="tooltip" data-placement="top" title="View Profile"><img src="<%=doc.author.avatar%>" onerror="this.onerror=null; this.src='images/hacker.png'" style="width: 100%;"></img></a>
                         </div>
-                        <div id="tag" style="background-color:transparent;color: #18A0FB; width: 85%;">Lalit Kushwah</div>
+                        <div id="tag" style="background-color:transparent;color: #18A0FB; width: 85%;"><%= doc.author.name%></div>
                     </div>
-                    <div id="name"><a>DSA Notes</a></div>
+                    <div id="name"><a><%= doc.name%></a></div>
                     <div id="tools">
-                        <a onclick="toggleBookmark('/favourite/toggleLike/')" data-toggle="tooltip" data-placement="top" title="Favourite | Unfavourite">
-                            <!-- idhr if else -->
-                            <i id="" class="fa-solid fa-bookmark"></i>  
+                        <!-- <% if(doc.isFav){%> -->
+                            <!-- <a onclick="toggleBookmark('/favourite/toggleLike/<%=doc._id%>')" data-toggle="tooltip" data-placement="top" title="Favourite | Unfavourite">
+                                <i id="" class="fa-solid fa-bookmark"></i>
+                            </a>
+                            <a id="<%=doc._id%>" onclick="togglePublic('/documents/togglePublic/<%= doc._id%>')" style="color: rgba(214, 214, 214, 1);" data-toggle="tooltip" data-placement="top" title="Make Private">
+                                <i class="fa-solid fa-lock-open"></i>  
+                            </a> -->
+                        <!-- <%}else{%> -->
+                            <!-- <a id="<%=doc._id%>" onclick="togglePublic('/documents/togglePublic/<%= doc._id%>')" style="color: rgba(214, 214, 214, 1);" data-toggle="tooltip" data-placement="top" title="Make Public">
+                                <i class="fa-solid fa-lock"></i>
+                            </a> -->
+                        <!-- <%}%> -->
+                        <a onclick="toggleBookmark('/favourite/toggleLike/<%=doc._id%>')" data-toggle="tooltip" data-placement="top" title="Favourite | Unfavourite">
+                            <% if(doc.isFavStatus){%>
+                                <i id="<%= doc._id %>" class="fa-solid fa-bookmark"></i>
+                            <%}else{%>
+                                <i id="<%= doc._id %>" class="fa-regular fa-bookmark"></i>
+                            <%}%>
                         </a>
-                        <a href="" id="delete" onclick="alert('You deleted a solved problem!')" data-toggle="tooltip" data-placement="top" title="Delete Problem"><i class="fa-solid fa-file-arrow-down"></i></a>
+                        <%if(doc.uploadWay === "Google Drive Link"){%>
+                            <a id="tool" style="color: rgba(214, 214, 214, 1);" href="<%= doc.downloadLink%>" target="_blank" data-toggle="tooltip" data-placement="top" title="Download File"><i class="fa-solid fa-file-arrow-down"></i></a>
+                        <%}else{%>
+                            <a id="tool" style="color: rgba(214, 214, 214, 1);" href="/documents/download/<%= doc._id%>" data-toggle="tooltip" data-placement="top" title="Download File"><i class="fa-solid fa-file-arrow-down"></i></a>
+                        <%}%>
+                              
+                        </a>
                     </div>
                 </div>
-
-                <div class="brick animate__animated animate__fadeInUp">
-                    <div id="tags">
-                        <div id="profile" style="width: 15%;">
-                           <a href="/users/profile/<%=locals.user._id %>" data-toggle="tooltip" data-placement="top" title="View Profile"><img src="<%=locals.user.avatar%>" onerror="this.onerror=null; this.src='images/hacker.png'" style="width: 100%;"></img></a>
-                        </div>
-                        <div id="tag" style="background-color:transparent;color: #18A0FB; width: 85%;">Kartik Shukla</div>
-                    </div>
-                    <div id="name"><a>Web Programming PPT</a></div>
-                    <div id="tools">
-                        <a onclick="toggleBookmark('/favourite/toggleLike/')" data-toggle="tooltip" data-placement="top" title="Favourite | Unfavourite">
-                          
-                            <i id="" class="fa-solid fa-bookmark"></i>  
-                        </a>
-                        <a href="" id="delete" onclick="alert('You deleted a solved problem!')" data-toggle="tooltip" data-placement="top" title="Delete Problem"><i class="fa-solid fa-file-arrow-down"></i></a>
-                    </div>
-                </div>
-
-                <div class="brick animate__animated animate__fadeInUp">
-                    <div id="tags">
-                        <div id="profile" style="width: 15%;">
-                           <a href="" data-toggle="tooltip" data-placement="top" title="View Profile"><img src="<%=locals.user.avatar%>" onerror="this.onerror=null; this.src='images/hacker.png'" style="width: 100%;"></img></a>
-                        </div>
-                        <div id="tag" style="background-color:transparent;color: #18A0FB; width: 85%;">Uttkarsh Raj</div>
-                    </div>
-                    <div id="name"><a>Top DSA Problems List</a></div>
-                    <div id="tools">
-                        <a onclick="toggleBookmark('/favourite/toggleLike/')" data-toggle="tooltip" data-placement="top" title="Favourite | Unfavourite">
-                           
-                            <i id="" class="fa-solid fa-bookmark"></i>  
-                        </a>
-                        <a href="" id="delete" onclick="alert('You deleted a solved problem!')" data-toggle="tooltip" data-placement="top" title="Delete Problem"><i class="fa-solid fa-file-arrow-down"></i></a>
-                    </div>
-                </div>
-
-                <div class="brick animate__animated animate__fadeInUp">
-                    <div id="tags">
-                        <div id="profile" style="width: 15%;">
-                           <a href="/users/profile/<%=locals.user._id %>" data-toggle="tooltip" data-placement="top" title="View Profile"><img src="<%=locals.user.avatar%>" onerror="this.onerror=null; this.src='images/hacker.png'" style="width: 100%;"></img></a>
-                        </div>
-                        <div id="tag" style="background-color:transparent;color: #18A0FB; width: 85%;">Pratyush Aggarwal</div>
-                    </div>
-                    <div id="name"><a>Complete OS Notes</a></div>
-                    <div id="tools">  
-                        <a onclick="toggleBookmark('/favourite/toggleLike/')" data-toggle="tooltip" data-placement="top" title="Favourite | Unfavourite">
-                          
-                            <i id="" class="fa-solid fa-bookmark"></i>  
-                        </a>
-                        <a href="" id="delete" onclick="alert('You deleted a solved problem!')" data-toggle="tooltip" data-placement="top" title="Delete Problem"><i class="fa-solid fa-file-arrow-down"></i></a>
-                    </div>
-                </div>
-            
+                <%}%>
         </div>
             
     </div>
