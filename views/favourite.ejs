@@ -1,0 +1,68 @@
+<link rel="stylesheet" type="text/css" href="/css/favourite.css">
+<div id="main-body">
+    <div id="menu">
+        <div id="list-menu">
+            <ul class="vertical-list">
+                <li style="margin-top:0rem !important;color: white !important;"><a href="/"><i class="fa-solid fa-chart-line"></i> DashBoard</a></li>
+                <li><a href="/favourites" style="color: white;"><i class="fa-solid fa-bookmark"></i> Favourites</a>
+                </li>
+                <li><a href="/documents"><i class="fa-solid fa-file"></i>My Documents</a></li>
+                <li><a href="/users/profile/<%=locals.user._id %>"><i class="fa-solid fa-address-card"></i> Profile Settings</a></li>
+            </ul>
+        </div>
+        <div id="btn-out">
+            <a href="/users/sign-out"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</a>
+        </div>
+        <div id="rights">
+            @NITC Notes, All Rights Reserved
+        </div>
+
+    </div>
+<div id="data">
+    <div class="toolbar">
+    <div>Favourite Notes</div>
+    </div>
+    <div id="recents">
+        <div class="header">
+            <div style="width:12%">Posted By</div>
+            <div style="width:40%;text-align: left;">Name of Document</div>
+            <div style="width:18%;" onclick="sortByDate()" data-toggle="tooltip" data-placement="top" title="Order by Date">Posted On <i class="fa-solid fa-sort"></i></div>
+            <div style="width:17%">Owner Name</div>
+            <div style="width:13%"></div>
+        </div>
+        <div id="fetchedList">
+            <% if(!problems.length){%>
+                <div class="empty-state">
+                    <div class="empty-state__content animate__animated animate__pulse">
+                      <div class="empty-state__icon">
+                        <img src="/images/search-result-not-found-2130361-1800925.png" alt="no-result-found">
+                      </div>
+                      <div class="empty-state__message">No Problems marked as favourite.</div>
+                      <div class="empty-state__help">
+                        Starting adding your favourite problems from Problems section to Favourites.
+                      </div>
+                    </div>
+                </div>
+            <%}%>
+            <% for(let problem of problems){%>
+                <div class="item animate__animated animate__fadeInUp" data-topic="<%= problem.topic%>" id="<%= problem.id%>">
+                <div style="width:12%;box-sizing: border-box;" id="userlistdp">
+                    <a><img src="/images/platforms/<%= problem.website%>.png" onerror="this.onerror=null; this.src='images/hacker.png'"></img></a>
+                </div>
+                <div style="width:40%;text-align: left;" class="question"><a href="/problem/view/<%= problem.id%>" data-toggle="tooltip" data-placement="top" title="View Problem">DSA Notes</a></div>
+                <div style="width:18%"><%= new Date(problem.createdAt).toDateString()%></div>
+                <div style="width:17%;background-color:#1570FF;padding:0.4rem 0rem;border-radius:10px;">Lalit Kushwah</div>
+                <div style="width:13%; display: flex;justify-content: space-evenly;">
+                    <a id="tool" onclick="toggleAndRemove('/favourite/toggleLike/<%=problem.id%>')" style="color: rgba(214, 214, 214, 1);" data-toggle="tooltip" data-placement="top" title="Unfavourite">
+                        <i class="fa-solid fa-bookmark"></i>   
+                    </a>
+                    <a id="del" href="/problem/delete/<%= problem.id%>"  style="color: rgba(214, 214, 214, 1);" onclick="alert('You deleted a solved problem!')" data-toggle="tooltip" data-placement="top" title="Delete Problem"><i class="fa-solid fa-file-arrow-down"></i></a>
+                </div>
+                </div>
+            <%}%>
+    </div>              
+    </div>
+</div>
+</div>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script>
+<script src="/js/favourite.js"></script>

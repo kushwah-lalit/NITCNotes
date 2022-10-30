@@ -39,20 +39,20 @@ module.exports.destroySession = function(req, res){
 
 module.exports.profile = async function(req,res){
     User.findById(req.params.id,async function(err, user){
-        let noty = await bellData.taskData(req.user.id);
+        // let noty = await bellData.taskData(req.user.id);
         if(err||!user){
             console.log('Error finding user with requested',err);
             return res.render('404', {
                 title: '404 Page not found',
-                noty:noty
+                // noty:noty
             });
         }
-        let rank = (((await User.find({},'email-_id').sort('-problemCount')).map(({_id}) => _id.toString()))).indexOf(user.id);
+        // let rank = (((await User.find({},'email-_id').sort('-problemCount')).map(({_id}) => _id.toString()))).indexOf(user.id);
         return res.render('profile', {
             title: `Profile | ${user.name}`,
             profile_user: user,
-            rank:rank+1,
-            noty:noty
+            // rank:rank+1,
+            // noty:noty
         });
     });
 };

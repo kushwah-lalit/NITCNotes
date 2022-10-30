@@ -57,6 +57,8 @@ module.exports.uploadDoc = async function(req,res){
                         console.log('Document not created :: Error :', err);
                         return;
                     } else {
+                        user.notesCount++;
+                        user.save();
                         req.flash('success', 'Document Successfully Added');
                         console.log('Document Successfully Added');
                         return res.redirect('back');
@@ -110,6 +112,12 @@ module.exports.deleteDoc = function(req,res){
             });
         }
         if(file.author.id == req.user.id){
+            let user = await User.findById(req.user.id);
+            if(file.isPublic){
+                user.publicNotesCount--;
+            }
+            await user.notesCount--;
+            await user.save();
             if(file.uploadWay === "Google Drive Link"){
                 await file.remove();
             }else{
@@ -188,9 +196,16 @@ module.exports.shareDoc = function(req,res){
 
 module.exports.togglePublic = async function(req,res){
     try{
+        let user = await User.findById(req.user.id);  
         let document = await Document.findById(req.params.id).populate('author');
         if(document){
             if(document.author.id == req.user.id){
+                if(document.isPublic){
+                    await user.publicNotesCount--;
+                }else{
+                    await user.publicNotesCount++;
+                }
+                await user.save();
                 document.isPublic = !document.isPublic;
                 await document.save();
                 if (req.xhr){
