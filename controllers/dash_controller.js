@@ -22,7 +22,7 @@ module.exports.home = function(req,res){
             });
             //console.log(documents);
             return res.render('dashboard',{
-                title:'Dashboard | ${user.name}',
+                title:`Dashboard | ${user.name}`,
                 dashDocs:documents,
             });
         }catch(err){

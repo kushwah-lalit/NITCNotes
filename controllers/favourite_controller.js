@@ -1,5 +1,22 @@
 const User = require('../models/user');
 const Document = require('../models/document');
+module.exports.showDocuments = async function(req,res){
+    try{
+        let document = await Document.findById(req.params.id);
+        let user = await User.findById(req.user.id);
+        let documents = await Document.find().where('_id').in(user.favorites).sort('-createdAt').populate('author').exec();
+        console.log(documents);
+        return res.render('favourite',{
+            title:'Favourites',
+            docs:documents
+            // noty:noty
+        });
+    }catch(err){
+        req.flash('error', err);
+        console.log('Favourite Page Load :: Error :',err);
+        return res.redirect('back');
+    }
+};
 module.exports.toggleFavourite = async function(req,res){
     try{
         let document = await Document.findById(req.params.id);

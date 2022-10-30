@@ -68,9 +68,9 @@ function toggleAndRemove(link){
                     <div class="empty-state__icon">
                         <img src="/images/search-result-not-found-2130361-1800925.png" alt="no-result-found">
                     </div>
-                    <div class="empty-state__message">No Problems marked as favourite.</div>
+                    <div class="empty-state__message">No Documents marked as favourite.</div>
                     <div class="empty-state__help">
-                        Starting adding your favourite problems from Problems section to Favourites.
+                        Starting adding your favourite Documents from Dashboards section to Favourites.
                     </div>
                     </div>
                 </div>`);
