@@ -149,7 +149,7 @@ module.exports.shareDoc = function(req,res){
                         to: req.body.mail,
                         from: {
                             email:process.env.SENDGRID_EMAIL,
-                            name:'Everlast Notes'},
+                            name:'NITC Notes'},
                         templateId: process.env.DRIVE_LINK_TEMPLATE,
                         dynamic_template_data: {
                         name:file.author.name,
@@ -161,7 +161,7 @@ module.exports.shareDoc = function(req,res){
                         to: req.body.mail,
                         from: {
                             email:process.env.SENDGRID_EMAIL,
-                            name:'Everlast Notes'},
+                            name:'NITC Notes'},
                         templateId: process.env.FILE_LINK_TEMPLATE,
                         dynamic_template_data: {
                         name:file.author.name,
